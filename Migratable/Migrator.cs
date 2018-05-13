@@ -7,11 +7,17 @@ namespace Migratable
 {
     public class Migrator : IMigrator
     {
-        public List<Migration> migrations = new List<Migration>();
-
-        public List<Migration> LoadMigrations(string folderPath)
+        public Migrator(IProvider provider)
         {
-            migrations = new List<Migration>();
+            this.provider = provider;
+        }
+
+        private SortedList<long, Migration> migrations = new SortedList<long, Migration>();
+        private readonly IProvider provider;
+
+        public SortedList<long, Migration> LoadMigrations(string folderPath)
+        {
+            migrations = new SortedList<long, Migration>();
             var folder = new DirectoryInfo(folderPath);
             var subfolders = folder.GetDirectories();
             foreach (var subfolder in subfolders)
@@ -21,7 +27,7 @@ namespace Migratable
                 {
                     var upFile = new FileInfo(Path.Combine(subfolder.FullName, "up.sql"));
                     var downFile = new FileInfo(Path.Combine(subfolder.FullName, "down.sql"));
-                    migrations.Add(new Migration
+                    migrations.Add(version, new Migration
                     {
                         Version = version,
                         Name = subfolder.Name,
@@ -30,8 +36,56 @@ namespace Migratable
                     });
                 }
             }
-
             return migrations;
+        }
+
+        public long GetVersion()
+        {
+            return provider.GetVersion();
+        }
+        public void SetVersion(long targetVersion)
+        {
+            var currentVersion = GetVersion();
+            if (currentVersion > targetVersion)
+            {
+                RollBackward(targetVersion);
+            } else if (currentVersion < targetVersion)
+            {
+                RollForward(targetVersion);
+            }
+        }
+
+        public void RollForward(long targetVersion)
+        {
+            var currentVersion = GetVersion();
+            while (currentVersion < targetVersion)
+            {
+                currentVersion += 1;
+                if (migrations.ContainsKey(currentVersion))
+                {
+                    var up = migrations[currentVersion].Up;
+                    if (!string.IsNullOrWhiteSpace(up))
+                    {
+                        provider.Execute(currentVersion, up);
+                    }
+                }
+            }
+        }
+        public void RollBackward(long targetVersion)
+        {
+            var currentVersion = GetVersion();
+            while (currentVersion > targetVersion)
+            {
+                if (migrations.ContainsKey(currentVersion))
+                {
+                    var down = migrations[currentVersion].Down;
+                    if (!string.IsNullOrWhiteSpace(down))
+                    {
+                        provider.Execute(currentVersion, down);
+                    }
+                }
+                currentVersion -= 1;
+            }
         }
     }
 }

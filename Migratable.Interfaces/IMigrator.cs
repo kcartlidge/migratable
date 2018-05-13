@@ -5,6 +5,12 @@ namespace Migratable.Interfaces
 {
     public interface IMigrator
     {
-        List<Migration> LoadMigrations(string folderPath);
+        SortedList<long, Migration> LoadMigrations(string folderPath);
+
+        long GetVersion();
+        void SetVersion(long targetVersion);
+
+        void RollForward(long targetVersion);
+        void RollBackward(long targetVersion);
     }
 }

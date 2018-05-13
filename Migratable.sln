@@ -16,7 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migratable", "Migratable\Mi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migratable.Models", "Migratable.Models\Migratable.Models.csproj", "{74866E6C-C21A-4006-8A59-BB4BCDFAD75B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migratable.Tests", "Migratable.Tests\Migratable.Tests.csproj", "{AD2AEA10-9B16-4134-8D28-0396485E841A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migratable.Tests", "Migratable.Tests\Migratable.Tests.csproj", "{AD2AEA10-9B16-4134-8D28-0396485E841A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migratable.MySqlProvider", "Migratable.MySqlProvider\Migratable.MySqlProvider.csproj", "{5894C20F-CA76-4AF9-8540-62FEC246CB03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +42,10 @@ Global
 		{AD2AEA10-9B16-4134-8D28-0396485E841A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD2AEA10-9B16-4134-8D28-0396485E841A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD2AEA10-9B16-4134-8D28-0396485E841A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5894C20F-CA76-4AF9-8540-62FEC246CB03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5894C20F-CA76-4AF9-8540-62FEC246CB03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5894C20F-CA76-4AF9-8540-62FEC246CB03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5894C20F-CA76-4AF9-8540-62FEC246CB03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
