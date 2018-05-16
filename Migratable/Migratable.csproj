@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Authors>K Cartlidge</Authors>
+    <Company>K Cartlidge</Company>
+    <Description>Simple, efficient, and tested .Net Core database migrations supporting multiple database technologies.</Description>
+    <Copyright>K Cartlidge</Copyright>
+    <PackageTags>dotnet,core,migrations,database</PackageTags>
+    <PackageReleaseNotes>Pre-alpha; not ready for use.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
