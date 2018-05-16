@@ -6,6 +6,34 @@ Simple, efficient, and tested .Net Core database migrations supporting multiple 
 
 Not yet usable; undergoing initial development.
 
+---
+
+## For developers working on Migratable itself
+
+If you only intend making use of *Migratable* in your own projects read no further.
+
+### Generating a build and running the tests
+
+There is no need to generate a build as *Migratable* is a class library not an application.
+If you run the tests, a build is generated anyway automatically:
+
+``` sh
+cd Migratable.Tests
+dotnet test
+```
+
+### Creating a new version for Nuget
+
+The ```Migratable/Migratable.csproj``` file contains Nuget settings.
+Within that file, update the version number then create the Nuget package:
+
+``` sh
+cd Migratable
+dotnet pack
+```
+
+---
+
 ## MIT Licence
 
 Copyright (c) 2018 K Cartlidge

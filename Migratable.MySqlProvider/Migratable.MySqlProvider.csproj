@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Migratable.Interfaces\Migratable.Interfaces.csproj" />
+    <ProjectReference Include="..\Migratable\Migratable.csproj" />
   </ItemGroup>
 
 </Project>

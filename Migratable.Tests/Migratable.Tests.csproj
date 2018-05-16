@@ -15,8 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Migratable.Interfaces\Migratable.Interfaces.csproj" />
-    <ProjectReference Include="..\Migratable.Models\Migratable.Models.csproj" />
     <ProjectReference Include="..\Migratable\Migratable.csproj" />
   </ItemGroup>
 

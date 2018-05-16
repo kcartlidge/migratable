@@ -6,14 +6,11 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Authors>K Cartlidge</Authors>
     <Company>K Cartlidge</Company>
+    <VersionPrefix>0.0.1</VersionPrefix>
     <Description>Simple, efficient, and tested .Net Core database migrations supporting multiple database technologies.</Description>
     <Copyright>K Cartlidge</Copyright>
-    <PackageTags>dotnet,core,migrations,database</PackageTags>
+    <PackageTags>migrations,database,dotnet core</PackageTags>
     <PackageReleaseNotes>Pre-alpha; not ready for use.</PackageReleaseNotes>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Migratable.Interfaces\Migratable.Interfaces.csproj" />
-  </ItemGroup>
 
 </Project>

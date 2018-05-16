@@ -1,5 +1,5 @@
-﻿using Migratable.Interfaces;
-using Migratable.Models;
+﻿using Migratable.Models;
+using Migratable.Interfaces;
 using System.Collections.Generic;
 using System.IO;
 
@@ -49,7 +49,8 @@ namespace Migratable
             if (currentVersion > targetVersion)
             {
                 RollBackward(targetVersion);
-            } else if (currentVersion < targetVersion)
+            }
+            else if (currentVersion < targetVersion)
             {
                 RollForward(targetVersion);
             }

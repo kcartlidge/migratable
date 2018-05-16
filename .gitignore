@@ -19,3 +19,5 @@ nCrunchTemp_*
 *.nuget.targets
 node_modules/
 .idea/
+launch.json
+tasks.json
