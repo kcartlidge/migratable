@@ -14,11 +14,13 @@ namespace Migratable.Tests
     {
         private IMigrator migrator;
         private Mock<IProvider> provider;
+        private Mock<INotifier> notifier;
 
         [TestInitialize]
         public void Setup()
         {
             provider = new Mock<IProvider>();
+            notifier = new Mock<INotifier>();
             migrator = new Migrator(provider.Object);
         }
 
@@ -52,35 +54,35 @@ namespace Migratable.Tests
                 new Migration
                 {
                     Version = 1,
-                    Name = "001 Create account table",
+                    Name = "Create account table",
                     Up = "-- UP 1",
                     Down = "",
                 },
                 new Migration
                 {
                     Version = 2,
-                    Name = "002 Add default users",
+                    Name = "Add default users",
                     Up = "-- UP 2",
                     Down = "-- DOWN 2",
                 },
                 new Migration
                 {
                     Version = 3,
-                    Name = "003 Remove root user",
+                    Name = "Remove root user",
                     Up = "",
                     Down = "-- DOWN 3",
                 },
                 new Migration
                 {
                     Version = 4,
-                    Name = "004 Do something else",
+                    Name = "Do something else",
                     Up = "-- UP 4",
                     Down = "-- DOWN 4",
                 },
                 new Migration
                 {
                     Version = 5,
-                    Name = "005 One final thing",
+                    Name = "One final thing",
                     Up = "-- UP 5",
                     Down = "-- DOWN 5",
                 },
@@ -121,33 +123,15 @@ namespace Migratable.Tests
         {
             Action action = () => migrator.LoadMigrations("fixtures-with-duplicates");
 
-            action.Should().ThrowExactly<ArgumentException>();
+            action.Should().Throw<Exception>();
         }
 
         [TestMethod]
-        public void LoadMigrations_FolderHasMissingMigrations_StillLoadsOthers()
+        public void LoadMigrations_FolderHasMissingMigrations_ThrowsException()
         {
-            var result = migrator.LoadMigrations("fixtures-with-version-gap");
+            Action action = () => migrator.LoadMigrations("fixtures-with-version-gap");
 
-            result.Count.Should().Be(2);
-
-            result.Values.Should().BeEquivalentTo(new Migration[]
-            {
-                new Migration
-                {
-                    Version = 1,
-                    Name = "001 Create account table",
-                    Up = "-- UP 1",
-                    Down = "",
-                },
-                new Migration
-                {
-                    Version = 3,
-                    Name = "003 Remove root user",
-                    Up = "",
-                    Down = "-- DOWN 3",
-                },
-            });
+            action.Should().Throw<Exception>();
         }
 
         // Versioning.
@@ -164,6 +148,17 @@ namespace Migratable.Tests
         }
 
         [TestMethod]
+        public void SetVersion_WithUnknownVersion_ThrowsException()
+        {
+            var targetVersion = 99;
+            var migrations = migrator.LoadMigrations("fixtures");
+
+            Action action = () => migrator.SetVersion(targetVersion);
+
+            action.Should().Throw<Exception>();
+        }
+
+        [TestMethod]
         public void SetVersion_WhenAtHigherVersion_RollsBackward()
         {
             var version = 2;
@@ -173,12 +168,13 @@ namespace Migratable.Tests
 
             migrator.SetVersion(targetVersion);
 
-            provider.Verify(x => x.Execute(2, migrations[2].Down), Times.Once);   // has UP
-            provider.Verify(x => x.Execute(1, migrations[1].Down), Times.Never);  // target version
+            provider.Verify(x => x.Execute(migrations[2].Down), Times.Once);   // has UP
+            provider.Verify(x => x.SetVersion(1), Times.Once);
+            provider.Verify(x => x.Execute(migrations[1].Down), Times.Never);  // target version
             foreach (var migration in migrations)
             {
                 // UP should never be actioned.
-                provider.Verify(x => x.Execute(It.IsAny<long>(), migration.Value.Up), Times.Never);
+                provider.Verify(x => x.Execute(migration.Value.Up), Times.Never);
             }
         }
 
@@ -186,11 +182,13 @@ namespace Migratable.Tests
         public void SetVersion_WhenAtSameVersion_DoesNothing()
         {
             var version = 1;
+            migrator.LoadMigrations("fixtures");
             provider.Setup(x => x.GetVersion()).Returns(version);
 
             migrator.SetVersion(version);
 
-            provider.Verify(x => x.Execute(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
+            provider.Verify(x => x.Execute(It.IsAny<string>()), Times.Never);
+            provider.Verify(x => x.SetVersion(It.IsAny<long>()), Times.Never);
         }
 
         [TestMethod]
@@ -203,12 +201,14 @@ namespace Migratable.Tests
 
             migrator.SetVersion(targetVersion);
 
-            provider.Verify(x => x.Execute(1, migrations[1].Up), Times.Never);  // starting version
-            provider.Verify(x => x.Execute(2, migrations[2].Up), Times.Once);   // target version
+            provider.Verify(x => x.Execute(migrations[1].Up), Times.Never);  // starting version
+            provider.Verify(x => x.SetVersion(1), Times.Never);
+            provider.Verify(x => x.Execute(migrations[2].Up), Times.Once);   // target version
+            provider.Verify(x => x.SetVersion(2), Times.Once);
             foreach (var migration in migrations)
             {
                 // DOWN should never be actioned.
-                provider.Verify(x => x.Execute(It.IsAny<long>(), migration.Value.Down), Times.Never);
+                provider.Verify(x => x.Execute(migration.Value.Down), Times.Never);
             }
         }
 
@@ -223,7 +223,8 @@ namespace Migratable.Tests
 
             migrator.RollForward(targetVersion);
 
-            provider.Verify(x => x.Execute(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
+            provider.Verify(x => x.Execute(It.IsAny<string>()), Times.Never);
+            provider.Verify(x => x.SetVersion(It.IsAny<long>()), Times.Never);
         }
 
         [TestMethod]
@@ -234,7 +235,8 @@ namespace Migratable.Tests
 
             migrator.RollForward(version);
 
-            provider.Verify(x => x.Execute(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
+            provider.Verify(x => x.Execute(It.IsAny<string>()), Times.Never);
+            provider.Verify(x => x.SetVersion(It.IsAny<long>()), Times.Never);
         }
 
         [TestMethod]
@@ -247,15 +249,20 @@ namespace Migratable.Tests
 
             migrator.RollForward(targetVersion);
 
-            provider.Verify(x => x.Execute(1, migrations[1].Up), Times.Never);  // starting version
-            provider.Verify(x => x.Execute(2, migrations[2].Up), Times.Once);   // has UP
-            provider.Verify(x => x.Execute(3, migrations[3].Up), Times.Never);  // has empty UP
-            provider.Verify(x => x.Execute(4, migrations[4].Up), Times.Once);   // has UP
-            provider.Verify(x => x.Execute(5, migrations[5].Up), Times.Never);  // beyond target version
+            provider.Verify(x => x.Execute(migrations[1].Up), Times.Never);  // starting version
+            provider.Verify(x => x.SetVersion(1), Times.Never);
+            provider.Verify(x => x.Execute(migrations[2].Up), Times.Once);   // has UP
+            provider.Verify(x => x.SetVersion(2), Times.Once);
+            provider.Verify(x => x.Execute(migrations[3].Up), Times.Never);  // has empty UP
+            provider.Verify(x => x.SetVersion(3), Times.Never);
+            provider.Verify(x => x.Execute(migrations[4].Up), Times.Once);   // has UP
+            provider.Verify(x => x.SetVersion(4), Times.Once);
+            provider.Verify(x => x.Execute(migrations[5].Up), Times.Never);  // beyond target version
+            provider.Verify(x => x.SetVersion(5), Times.Never);
             foreach (var migration in migrations)
             {
                 // DOWN should never be actioned.
-                provider.Verify(x => x.Execute(It.IsAny<long>(), migration.Value.Down), Times.Never);
+                provider.Verify(x => x.Execute(migration.Value.Down), Times.Never);
             }
         }
 
@@ -270,7 +277,8 @@ namespace Migratable.Tests
 
             migrator.RollBackward(targetVersion);
 
-            provider.Verify(x => x.Execute(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
+            provider.Verify(x => x.Execute(It.IsAny<string>()), Times.Never);
+            provider.Verify(x => x.SetVersion(It.IsAny<long>()), Times.Never);
         }
 
         [TestMethod]
@@ -281,7 +289,8 @@ namespace Migratable.Tests
 
             migrator.RollBackward(version);
 
-            provider.Verify(x => x.Execute(It.IsAny<long>(), It.IsAny<string>()), Times.Never);
+            provider.Verify(x => x.Execute(It.IsAny<string>()), Times.Never);
+            provider.Verify(x => x.SetVersion(It.IsAny<long>()), Times.Never);
         }
 
         [TestMethod]
@@ -294,16 +303,53 @@ namespace Migratable.Tests
 
             migrator.RollBackward(targetVersion);
 
-            provider.Verify(x => x.Execute(5, migrations[5].Down), Times.Once);   // starting version
-            provider.Verify(x => x.Execute(4, migrations[4].Down), Times.Once);   // has DOWN
-            provider.Verify(x => x.Execute(3, migrations[3].Down), Times.Once);   // has DOWN
-            provider.Verify(x => x.Execute(2, migrations[2].Down), Times.Once);   // has DOWN
-            provider.Verify(x => x.Execute(1, migrations[1].Down), Times.Never);  // target version
+            provider.Verify(x => x.Execute(migrations[5].Down), Times.Once);   // starting version
+            provider.Verify(x => x.SetVersion(5), Times.Never);
+            provider.Verify(x => x.Execute(migrations[4].Down), Times.Once);   // has DOWN
+            provider.Verify(x => x.SetVersion(4), Times.Once);
+            provider.Verify(x => x.Execute(migrations[3].Down), Times.Once);   // has DOWN
+            provider.Verify(x => x.SetVersion(3), Times.Once);
+            provider.Verify(x => x.Execute(migrations[2].Down), Times.Once);   // has DOWN
+            provider.Verify(x => x.SetVersion(2), Times.Once);
+            provider.Verify(x => x.Execute(migrations[1].Down), Times.Never);  // target version
+            provider.Verify(x => x.SetVersion(1), Times.Once);
             foreach (var migration in migrations)
             {
                 // UP should never be actioned.
-                provider.Verify(x => x.Execute(It.IsAny<long>(), migration.Value.Up), Times.Never);
+                provider.Verify(x => x.Execute(migration.Value.Up), Times.Never);
             }
+        }
+
+        // Notifier.
+
+        [TestMethod]
+        public void RollForward_WhenMigrationOccurs_IssuesNotification()
+        {
+            var version = 1;
+            var targetVersion = 2;
+            var migrations = migrator.LoadMigrations("fixtures");
+            provider.Setup(x => x.GetVersion()).Returns(version);
+            migrator.SetNotifier(notifier.Object);
+
+            migrator.RollForward(targetVersion);
+
+            notifier.Verify(x => x.Notify(migrations[2], Direction.Up), Times.Once);
+            notifier.Verify(x => x.Notify(migrations[2], Direction.Down), Times.Never);
+        }
+
+        [TestMethod]
+        public void RollBackward_WhenMigrationOccurs_IssuesNotification()
+        {
+            var version = 2;
+            var targetVersion = 1;
+            var migrations = migrator.LoadMigrations("fixtures");
+            provider.Setup(x => x.GetVersion()).Returns(version);
+            migrator.SetNotifier(notifier.Object);
+
+            migrator.RollBackward(targetVersion);
+
+            notifier.Verify(x => x.Notify(migrations[2], Direction.Down), Times.Once);
+            notifier.Verify(x => x.Notify(migrations[2], Direction.Up), Times.Never);
         }
     }
 }

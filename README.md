@@ -2,9 +2,96 @@
 
 Simple, efficient, and tested .Net Core database migrations supporting multiple database technologies.
 
-## Status
+## Using Migratable
 
-Not yet usable; undergoing initial development.
+*Migratable* itself is a versioned database migration manager.
+In order to do anything, it requires either a custom or a pre-written provider.
+The MySQL/MariaDB provider is in progress.
+
+``` cs
+using System;
+using Migratable.Interfaces;
+using Migratable.Models;
+
+namespace test_migratable
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
+                var provider = new DummyProvider();
+                var notifier = new Notifier();
+                var migrator = new Migratable.Migrator(provider);
+                migrator.SetNotifier(notifier);
+                migrator.LoadMigrations("./migrations");
+
+                Console.WriteLine("Rolling forward to 5");
+                migrator.RollForward(5);
+                Console.WriteLine("Now at {0}", migrator.GetVersion());
+
+                Console.WriteLine("Rolling backward to 0");
+                migrator.RollBackward(0);
+                Console.WriteLine("Now at {0}", migrator.GetVersion());
+
+                Console.WriteLine("Rolling forward to 2");
+                migrator.RollForward(2);
+                Console.WriteLine("Now at {0}", migrator.GetVersion());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("ERROR " + ex.Message);
+            }
+        }
+    }
+
+    public class Notifier : INotifier
+    {
+        public void Notify(Migration migration, Direction direction)
+        {
+            Console.WriteLine("   {0}.{1}  {2}", migration.Version, direction, migration.Name);
+        }
+    }
+
+    public class DummyProvider : IProvider
+    {
+        private long version = 0;
+
+        public void Execute(string instructions)
+        {
+            // Real providers would execute the (SQL) instructions.
+        }
+
+        public long GetVersion()
+        {
+            return this.version;
+        }
+
+        public void SetVersion(long versionNumber)
+        {
+            this.version = versionNumber;
+        }
+    }
+}
+```
+
+The code above passes in the folder ```./migrations```.
+Given that, the runtime folder should contain something like:
+
+```
+\migrations
+    \001 Create accounts
+        up.sql
+        down.sql
+    \002 Populate accounts
+        up.sql
+        down.sql
+```
+
+In each case above, the subfolder name is preceeded by the version sequence.
+The ```up.sql``` file would contain the SQL needed to "Create accounts".
 
 ---
 
@@ -29,7 +116,18 @@ Within that file, update the version number then create the Nuget package:
 
 ``` sh
 cd Migratable
+dotnet build
 dotnet pack
+```
+
+### Forcing another project to get the latest from Nuget
+
+It sometimes takes a while for a new version to be available after pushing.
+You may be able to speed up the process:
+
+``` sh
+cd <other-project>
+dotnet restore --no-cache
 ```
 
 ---

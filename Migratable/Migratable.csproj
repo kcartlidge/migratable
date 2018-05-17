@@ -3,14 +3,21 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Authors>K Cartlidge</Authors>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <VersionPrefix>1.0.2</VersionPrefix>
+    <Product>Migratable</Product>
     <Company>K Cartlidge</Company>
-    <VersionPrefix>0.0.1</VersionPrefix>
+    <Title>Migratable</Title>
+    <Authors>K Cartlidge</Authors>
     <Description>Simple, efficient, and tested .Net Core database migrations supporting multiple database technologies.</Description>
     <Copyright>K Cartlidge</Copyright>
+    <PackageLicenceUrl>https://opensource.org/licenses/MIT</PackageLicenceUrl>
+    <PackageProjectUrl>https://github.com/kcartlidge/migratable</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>migrations,database,dotnet core</PackageTags>
-    <PackageReleaseNotes>Pre-alpha; not ready for use.</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/kcartlidge/migratable</RepositoryUrl>
+    <Summary>Database migrations made easy. Transition forwards or backwards to any version without needing Entity Framework.</Summary>
   </PropertyGroup>
 
 </Project>

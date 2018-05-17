@@ -1,7 +1,9 @@
 ﻿using Migratable.Models;
 using Migratable.Interfaces;
 using System.Collections.Generic;
+using System.Collections;
 using System.IO;
+using System;
 
 namespace Migratable
 {
@@ -13,24 +15,44 @@ namespace Migratable
         }
 
         private SortedList<long, Migration> migrations = new SortedList<long, Migration>();
+        private INotifier notifier;
         private readonly IProvider provider;
+
+        public void SetNotifier(INotifier notifier)
+        {
+            this.notifier = notifier;
+        }
 
         public SortedList<long, Migration> LoadMigrations(string folderPath)
         {
             migrations = new SortedList<long, Migration>();
             var folder = new DirectoryInfo(folderPath);
             var subfolders = folder.GetDirectories();
+            long lastVersion = 0;
+            var sortedFolders = new SortedList<string, DirectoryInfo>();
             foreach (var subfolder in subfolders)
             {
-                var bits = subfolder.Name.Split(new char[] { ' ' }, 2);
+                sortedFolders.Add(subfolder.Name, subfolder);
+            }
+
+            var splitBy = new char[] { ' ' };
+            foreach (var subfolder in sortedFolders.Values)
+            {
+                var bits = subfolder.Name.Split(splitBy, 2, StringSplitOptions.RemoveEmptyEntries);
                 if (bits.Length == 2 && long.TryParse(bits[0], out long version))
                 {
+                    if (lastVersion > 0 && lastVersion != (version - 1))
+                    {
+                        var err = string.Format("Version goes from {0} to {1}", lastVersion, version);
+                        throw new Exception(err);
+                    }
+                    lastVersion = version;
                     var upFile = new FileInfo(Path.Combine(subfolder.FullName, "up.sql"));
                     var downFile = new FileInfo(Path.Combine(subfolder.FullName, "down.sql"));
                     migrations.Add(version, new Migration
                     {
                         Version = version,
-                        Name = subfolder.Name,
+                        Name = bits[1],
                         Up = upFile.Exists ? File.ReadAllText(upFile.FullName).Trim() : string.Empty,
                         Down = downFile.Exists ? File.ReadAllText(downFile.FullName).Trim() : string.Empty,
                     });
@@ -43,8 +65,13 @@ namespace Migratable
         {
             return provider.GetVersion();
         }
+
         public void SetVersion(long targetVersion)
         {
+            if (!migrations.ContainsKey(targetVersion))
+            {
+                throw new Exception(string.Format("Unknown version {0}", targetVersion));
+            }
             var currentVersion = GetVersion();
             if (currentVersion > targetVersion)
             {
@@ -64,14 +91,18 @@ namespace Migratable
                 currentVersion += 1;
                 if (migrations.ContainsKey(currentVersion))
                 {
-                    var up = migrations[currentVersion].Up;
+                    var migration = migrations[currentVersion];
+                    var up = migration.Up;
                     if (!string.IsNullOrWhiteSpace(up))
                     {
-                        provider.Execute(currentVersion, up);
+                        Notify(migration, Direction.Up);
+                        provider.Execute(up);
+                        provider.SetVersion(currentVersion);
                     }
                 }
             }
         }
+
         public void RollBackward(long targetVersion)
         {
             var currentVersion = GetVersion();
@@ -79,13 +110,24 @@ namespace Migratable
             {
                 if (migrations.ContainsKey(currentVersion))
                 {
-                    var down = migrations[currentVersion].Down;
+                    var migration = migrations[currentVersion];
+                    var down = migration.Down;
                     if (!string.IsNullOrWhiteSpace(down))
                     {
-                        provider.Execute(currentVersion, down);
+                        Notify(migration, Direction.Down);
+                        provider.Execute(down);
+                        provider.SetVersion(currentVersion - 1);
                     }
                 }
                 currentVersion -= 1;
+            }
+        }
+
+        private void Notify(Migration migration, Direction direction)
+        {
+            if (notifier != null)
+            {
+                notifier.Notify(migration, direction);
             }
         }
     }
