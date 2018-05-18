@@ -2,11 +2,19 @@
 
 Simple, efficient, and tested .Net Core database migrations supporting multiple database technologies.
 
+## Status
+
+Tested and working, but you would need to create your own ```IProvider``` implementation.
+There is an example one in the ```Example``` project, and the methods are simple.
+The MySQL/MariaDB provider is in progress.
+
 ## Using Migratable
 
 *Migratable* itself is a versioned database migration manager.
 In order to do anything, it requires either a custom or a pre-written provider.
-The MySQL/MariaDB provider is in progress.
+
+There is an ```Example``` project which is simple and self-contained.
+Full documentation will be available when the first provider is complete.
 
 ``` cs
 using System;
