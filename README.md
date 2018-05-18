@@ -17,76 +17,22 @@ There is an ```Example``` project which is simple and self-contained.
 Full documentation will be available when the first provider is complete.
 
 ``` cs
-using System;
-using Migratable.Interfaces;
-using Migratable.Models;
+// Configure.
+var provider = new SampleProvider();
+var notifier = new SampleNotifier();
+var migrator = new Migratable.Migrator(provider);
+migrator.SetNotifier(notifier);
 
-namespace test_migratable
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            try
-            {
-                var provider = new DummyProvider();
-                var notifier = new Notifier();
-                var migrator = new Migratable.Migrator(provider);
-                migrator.SetNotifier(notifier);
-                migrator.LoadMigrations("./migrations");
+// Load from the 'migrations' folder.
+migrator.LoadMigrations("./migrations");
 
-                Console.WriteLine("Rolling forward to 5");
-                migrator.RollForward(5);
-                Console.WriteLine("Now at {0}", migrator.GetVersion());
-
-                Console.WriteLine("Rolling backward to 0");
-                migrator.RollBackward(0);
-                Console.WriteLine("Now at {0}", migrator.GetVersion());
-
-                Console.WriteLine("Rolling forward to 2");
-                migrator.RollForward(2);
-                Console.WriteLine("Now at {0}", migrator.GetVersion());
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine();
-                Console.WriteLine("ERROR " + ex.Message);
-            }
-        }
-    }
-
-    public class Notifier : INotifier
-    {
-        public void Notify(Migration migration, Direction direction)
-        {
-            Console.WriteLine("   {0}.{1}  {2}", migration.Version, direction, migration.Name);
-        }
-    }
-
-    public class DummyProvider : IProvider
-    {
-        private long version = 0;
-
-        public void Execute(string instructions)
-        {
-            // Real providers would execute the (SQL) instructions.
-        }
-
-        public long GetVersion()
-        {
-            return this.version;
-        }
-
-        public void SetVersion(long versionNumber)
-        {
-            this.version = versionNumber;
-        }
-    }
-}
+// Roll forward from the current version to version 5.
+migrator.RollForward(5);
+var newCurrentVersion = migrator.GetVersion();
 ```
 
 The code above passes in the folder ```./migrations```.
-Given that, the runtime folder should contain something like:
+That folder should contain something like:
 
 ```
 \migrations
@@ -100,6 +46,10 @@ Given that, the runtime folder should contain something like:
 
 In each case above, the subfolder name is preceeded by the version sequence.
 The ```up.sql``` file would contain the SQL needed to "Create accounts".
+The ```down.sql``` file would contain the SQL needed to reverse that action.
+
+You must start at version one and you cannot omit a version in the sequence.
+You may also not have duplicate version numbers.
 
 ---
 
