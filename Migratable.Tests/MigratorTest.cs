@@ -266,6 +266,22 @@ namespace Migratable.Tests
             }
         }
 
+        [TestMethod]
+        public void RollForward_WhenOneVersionFails_IgnoresRemainder()
+        {
+            var version = 2;
+            var targetVersion = 5;
+            var migrations = migrator.LoadMigrations("fixtures");
+            provider.Setup(x => x.GetVersion()).Returns(version);
+            provider.Setup(x => x.Execute(migrations[4].Up)).Throws<Exception>();
+
+            Action action = () => migrator.RollForward(targetVersion);
+
+            action.Should().Throw<Exception>();
+            provider.Verify(x => x.Execute(migrations[4].Up), Times.Once);
+            provider.Verify(x => x.SetVersion(4), Times.Never);
+        }
+
         // Rolling backward.
 
         [TestMethod]
@@ -318,6 +334,22 @@ namespace Migratable.Tests
                 // UP should never be actioned.
                 provider.Verify(x => x.Execute(migration.Value.Up), Times.Never);
             }
+        }
+
+        [TestMethod]
+        public void RollBackward_WhenOneVersionFails_IgnoresRemainder()
+        {
+            var version = 5;
+            var targetVersion = 2;
+            var migrations = migrator.LoadMigrations("fixtures");
+            provider.Setup(x => x.GetVersion()).Returns(version);
+            provider.Setup(x => x.Execute(migrations[4].Down)).Throws<Exception>();
+
+            Action action = () => migrator.RollBackward(targetVersion);
+
+            action.Should().Throw<Exception>();
+            provider.Verify(x => x.Execute(migrations[4].Down), Times.Once);
+            provider.Verify(x => x.SetVersion(3), Times.Never);
         }
 
         // Notifier.
