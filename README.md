@@ -6,7 +6,7 @@ Simple, efficient, and tested .Net Core database migrations supporting multiple 
 
 Tested and working, but you would need to create your own ```IProvider``` implementation.
 There is an example one in the ```Example``` project, and the methods are simple.
-The MySQL/MariaDB provider is in progress.
+The [MySQL/MariaDB provider](https://github.com/kcartlidge/migratable) is in progress.
 
 ## Using Migratable
 
