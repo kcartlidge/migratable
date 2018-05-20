@@ -14,7 +14,7 @@ namespace Migratable
             this.provider = provider;
         }
 
-        private SortedList<long, Migration> migrations = new SortedList<long, Migration>();
+        private SortedList<int, Migration> migrations = new SortedList<int, Migration>();
         private INotifier notifier;
         private readonly IProvider provider;
 
@@ -23,12 +23,12 @@ namespace Migratable
             this.notifier = notifier;
         }
 
-        public SortedList<long, Migration> LoadMigrations(string folderPath)
+        public SortedList<int, Migration> LoadMigrations(string folderPath)
         {
-            migrations = new SortedList<long, Migration>();
+            migrations = new SortedList<int, Migration>();
             var folder = new DirectoryInfo(folderPath);
             var subfolders = folder.GetDirectories();
-            long lastVersion = 0;
+            int lastVersion = 0;
             var sortedFolders = new SortedList<string, DirectoryInfo>();
             foreach (var subfolder in subfolders)
             {
@@ -39,7 +39,7 @@ namespace Migratable
             foreach (var subfolder in sortedFolders.Values)
             {
                 var bits = subfolder.Name.Split(splitBy, 2, StringSplitOptions.RemoveEmptyEntries);
-                if (bits.Length == 2 && long.TryParse(bits[0], out long version))
+                if (bits.Length == 2 && int.TryParse(bits[0], out int version))
                 {
                     if (lastVersion > 0 && lastVersion != (version - 1))
                     {
@@ -61,12 +61,12 @@ namespace Migratable
             return migrations;
         }
 
-        public long GetVersion()
+        public int GetVersion()
         {
             return provider.GetVersion();
         }
 
-        public void SetVersion(long targetVersion)
+        public void SetVersion(int targetVersion)
         {
             if (!migrations.ContainsKey(targetVersion))
             {
@@ -83,7 +83,7 @@ namespace Migratable
             }
         }
 
-        public void RollForward(long targetVersion)
+        public void RollForward(int targetVersion)
         {
             var currentVersion = GetVersion();
             while (currentVersion < targetVersion)
@@ -103,7 +103,7 @@ namespace Migratable
             }
         }
 
-        public void RollBackward(long targetVersion)
+        public void RollBackward(int targetVersion)
         {
             var currentVersion = GetVersion();
             while (currentVersion > targetVersion)

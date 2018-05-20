@@ -2,7 +2,7 @@
 {
     public class Migration
     {
-        public long Version;
+        public int Version;
         public string Name;
         public string Up;
         public string Down;

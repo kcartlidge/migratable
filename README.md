@@ -4,9 +4,18 @@ Simple, efficient, and tested .Net Core database migrations supporting multiple 
 
 ## Status
 
-Tested and working, but you would need to create your own ```IProvider``` implementation.
-There is an example one in the ```Example``` project, and the methods are simple.
-The [MySQL/MariaDB provider](https://github.com/kcartlidge/migratable) is in progress.
+Fully working. ```IProvider``` implementations are easy to create
+(there is an example in the ```Example``` project).
+
+Available on *github*:
+
+* [Migratable](https://github.com/kcartlidge/migratable)
+* [Migratable.MySqlProvider](https://github.com/kcartlidge/migratable.mysqlprovider)
+
+Available on *nuget*:
+
+* [Migratable](https://www.nuget.org/packages/Migratable)
+* [Migratable.MySqlProvider](https://www.nuget.org/packages/Migratable.MySqlProvider)
 
 ## Using Migratable
 
@@ -14,7 +23,7 @@ The [MySQL/MariaDB provider](https://github.com/kcartlidge/migratable) is in pro
 In order to do anything, it requires either a custom or a pre-written provider.
 
 There is an ```Example``` project which is simple and self-contained.
-Full documentation will be available when the first provider is complete.
+Methods available are discoverable and obvious.
 
 ``` cs
 // Configure.

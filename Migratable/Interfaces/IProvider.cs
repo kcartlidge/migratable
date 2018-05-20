@@ -3,9 +3,9 @@
     public interface IProvider
     {
         /// <summary>Get the current version.</summary>
-        long GetVersion();
+        int GetVersion();
         /// <summary>Roll to the specified version.</summary>
-        void SetVersion(long versionNumber);
+        void SetVersion(int versionNumber);
 
         /// <summary>Execute the given instructions.</summary>
         void Execute(string instructions);

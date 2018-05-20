@@ -4,19 +4,19 @@ namespace Example
 {
     public class SampleProvider : IProvider
     {
-        private long version = 0;
+        private int version = 0;
 
         public void Execute(string instructions)
         {
             // A real provider would execute the instructions (e.g. write to the database).
         }
 
-        public long GetVersion()
+        public int GetVersion()
         {
             return this.version;
         }
 
-        public void SetVersion(long versionNumber)
+        public void SetVersion(int versionNumber)
         {
             this.version = versionNumber;
         }

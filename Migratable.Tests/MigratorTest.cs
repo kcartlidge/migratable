@@ -142,7 +142,7 @@ namespace Migratable.Tests
             var version = 1;
             provider.Setup(x => x.GetVersion()).Returns(version);
 
-            long result = migrator.GetVersion();
+            int result = migrator.GetVersion();
 
             result.Should().Be(version);
         }
@@ -188,7 +188,7 @@ namespace Migratable.Tests
             migrator.SetVersion(version);
 
             provider.Verify(x => x.Execute(It.IsAny<string>()), Times.Never);
-            provider.Verify(x => x.SetVersion(It.IsAny<long>()), Times.Never);
+            provider.Verify(x => x.SetVersion(It.IsAny<int>()), Times.Never);
         }
 
         [TestMethod]
@@ -224,7 +224,7 @@ namespace Migratable.Tests
             migrator.RollForward(targetVersion);
 
             provider.Verify(x => x.Execute(It.IsAny<string>()), Times.Never);
-            provider.Verify(x => x.SetVersion(It.IsAny<long>()), Times.Never);
+            provider.Verify(x => x.SetVersion(It.IsAny<int>()), Times.Never);
         }
 
         [TestMethod]
@@ -236,7 +236,7 @@ namespace Migratable.Tests
             migrator.RollForward(version);
 
             provider.Verify(x => x.Execute(It.IsAny<string>()), Times.Never);
-            provider.Verify(x => x.SetVersion(It.IsAny<long>()), Times.Never);
+            provider.Verify(x => x.SetVersion(It.IsAny<int>()), Times.Never);
         }
 
         [TestMethod]
@@ -294,7 +294,7 @@ namespace Migratable.Tests
             migrator.RollBackward(targetVersion);
 
             provider.Verify(x => x.Execute(It.IsAny<string>()), Times.Never);
-            provider.Verify(x => x.SetVersion(It.IsAny<long>()), Times.Never);
+            provider.Verify(x => x.SetVersion(It.IsAny<int>()), Times.Never);
         }
 
         [TestMethod]
@@ -306,7 +306,7 @@ namespace Migratable.Tests
             migrator.RollBackward(version);
 
             provider.Verify(x => x.Execute(It.IsAny<string>()), Times.Never);
-            provider.Verify(x => x.SetVersion(It.IsAny<long>()), Times.Never);
+            provider.Verify(x => x.SetVersion(It.IsAny<int>()), Times.Never);
         }
 
         [TestMethod]
