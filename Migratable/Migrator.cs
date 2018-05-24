@@ -68,7 +68,7 @@ namespace Migratable
 
         public void SetVersion(int targetVersion)
         {
-            if (!migrations.ContainsKey(targetVersion))
+            if (targetVersion > 0 && !migrations.ContainsKey(targetVersion))
             {
                 throw new Exception(string.Format("Unknown version {0}", targetVersion));
             }

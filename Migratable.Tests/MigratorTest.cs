@@ -56,7 +56,7 @@ namespace Migratable.Tests
                     Version = 1,
                     Name = "Create account table",
                     Up = "-- UP 1",
-                    Down = "",
+                    Down = "-- DOWN 1",
                 },
                 new Migration
                 {
@@ -102,7 +102,7 @@ namespace Migratable.Tests
         {
             var result = migrator.LoadMigrations("fixtures");
 
-            result[1].Down.Should().BeEmpty();
+            result[1].Down.Should().NotBeEmpty();
             result[1].Up.Should().NotBeEmpty();
             result[3].Down.Should().NotBeEmpty();
             result[3].Up.Should().BeEmpty();
@@ -156,6 +156,25 @@ namespace Migratable.Tests
             Action action = () => migrator.SetVersion(targetVersion);
 
             action.Should().Throw<Exception>();
+        }
+
+        [TestMethod]
+        public void SetVersion_WithVersionZero_CanRollBack()
+        {
+            var version = 1;
+            var targetVersion = 0;
+            var migrations = migrator.LoadMigrations("fixtures");
+            provider.Setup(x => x.GetVersion()).Returns(version);
+
+            migrator.SetVersion(targetVersion);
+
+            provider.Verify(x => x.Execute(migrations[1].Down), Times.Once);   // has UP
+            provider.Verify(x => x.SetVersion(0), Times.Once);
+            foreach (var migration in migrations)
+            {
+                // UP should never be actioned.
+                provider.Verify(x => x.Execute(migration.Value.Up), Times.Never);
+            }
         }
 
         [TestMethod]

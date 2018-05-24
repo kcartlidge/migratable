@@ -34,6 +34,9 @@
     <None Update="fixtures\001 Create account table\up.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="fixtures\001 Create account table\down.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="fixtures\002 Add default users\down.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

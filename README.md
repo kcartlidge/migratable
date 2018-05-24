@@ -9,13 +9,13 @@ Fully working. ```IProvider``` implementations are easy to create
 
 Available on *github*:
 
-* [Migratable](https://github.com/kcartlidge/migratable)
-* [Migratable.MySqlProvider](https://github.com/kcartlidge/migratable.mysqlprovider)
+* Migratable - https://github.com/kcartlidge/migratable
+* Migratable.MySqlProvider - https://github.com/kcartlidge/migratable.mysqlprovider
 
 Available on *nuget*:
 
-* [Migratable](https://www.nuget.org/packages/Migratable)
-* [Migratable.MySqlProvider](https://www.nuget.org/packages/Migratable.MySqlProvider)
+* Migratable - https://www.nuget.org/packages/Migratable
+* Migratable.MySqlProvider - https://www.nuget.org/packages/Migratable.MySqlProvider
 
 ## Using Migratable
 
@@ -35,8 +35,8 @@ migrator.SetNotifier(notifier);
 // Load from the 'migrations' folder.
 migrator.LoadMigrations("./migrations");
 
-// Roll forward from the current version to version 5.
-migrator.RollForward(5);
+// Migrate from the current version to version 5.
+migrator.SetVersion(5);
 var newCurrentVersion = migrator.GetVersion();
 ```
 
