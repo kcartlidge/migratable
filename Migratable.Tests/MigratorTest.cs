@@ -24,6 +24,18 @@ namespace Migratable.Tests
             migrator = new Migrator(provider.Object);
         }
 
+        // General.
+        [TestMethod]
+        public void Describe_GetsDescriptionFromProvider()
+        {
+            var description = "description from provider";
+            provider.Setup(x => x.Describe()).Returns(description);
+
+            string result = migrator.Describe();
+
+            result.Should().Be(description);
+        }
+
         // Loading.
 
         [TestMethod]

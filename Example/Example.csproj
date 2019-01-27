@@ -5,13 +5,13 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Migratable" Version="1.0.4" />
-  </ItemGroup>
-
   <PropertyGroup>
     <RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json;http://apiint.nugettest.org/v3/index.json</RestoreSources>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Migratable\Migratable.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Update="migrations\001 Create accounts\up.sql">
@@ -24,6 +24,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="migrations\002 Populate accounts\down.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="migrations\003 Create themes\down.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="migrations\003 Create themes\up.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="migrations\004 Create themes\up.sql">

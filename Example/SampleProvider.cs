@@ -6,6 +6,11 @@ namespace Example
     {
         private int version = 0;
 
+        public string Describe()
+        {
+            return $"Sample provider that just moves the version (currently {version}).";
+        }
+
         public void Execute(string instructions)
         {
             // A real provider would execute the instructions (e.g. write to the database).
@@ -13,12 +18,12 @@ namespace Example
 
         public int GetVersion()
         {
-            return this.version;
+            return version;
         }
 
         public void SetVersion(int versionNumber)
         {
-            this.version = versionNumber;
+            version = versionNumber;
         }
     }
 }

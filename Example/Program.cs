@@ -1,6 +1,4 @@
 ﻿using System;
-using Migratable.Interfaces;
-using Migratable.Models;
 
 namespace Example
 {
@@ -15,6 +13,10 @@ namespace Example
                 var notifier = new SampleNotifier();
                 var migrator = new Migratable.Migrator(provider);
                 migrator.SetNotifier(notifier);
+
+                // Introduction.
+                Console.WriteLine(migrator.Describe());
+                Console.WriteLine();
 
                 // Load from the 'migrations' folder.
                 Console.WriteLine("Loading migrations");
@@ -42,6 +44,10 @@ namespace Example
                 Console.WriteLine();
                 Console.WriteLine("ERROR " + ex.Message);
             }
+
+            Console.WriteLine();
+            Console.Write("Press enter/return ... ");
+            Console.ReadLine();
         }
     }
 }

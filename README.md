@@ -1,16 +1,15 @@
 # Migratable
 
-Simple, efficient, and tested .Net Core database migrations supporting multiple database technologies.
+Simple, efficient, and tested DotNet Core database migrations supporting multiple database technologies.
+
+* Create a completely new database by running all your migrations in one go
+* Easily bring an existing database structure up to date
+* Roll your database structure backwards as well as forwards
+* Use it to pre-populate, amend, or remove data
+* Your database structure is version-controlled
+* Migrations are defined as up and down SQL files in a folder
 
 ## Status
-
-Fully working. ```IProvider``` implementations are easy to create
-(there is an example in the ```Example``` project).
-
-Available on *github*:
-
-* Migratable - https://github.com/kcartlidge/migratable
-* Migratable.MySqlProvider - https://github.com/kcartlidge/migratable.mysqlprovider
 
 Available on *nuget*:
 
@@ -19,28 +18,28 @@ Available on *nuget*:
 
 ## Using Migratable
 
-*Migratable* itself is a versioned database migration manager.
-In order to do anything, it requires either a custom or a pre-written provider.
+*Migratable* is a versioned database migration manager.
+In order to do anything, it requires a *provider* for your chosen database system.
+**MySQL/MariaDB** is already available.
+Implementing your own is straightforward, being just a single interface.
 
-There is an ```Example``` project which is simple and self-contained.
-Methods available are discoverable and obvious.
+There is also an ```Example``` project which is totally self-contained as it uses an in-memory provider.
+
+### Sample usage
 
 ``` cs
 // Configure.
 var provider = new SampleProvider();
-var notifier = new SampleNotifier();
 var migrator = new Migratable.Migrator(provider);
-migrator.SetNotifier(notifier);
-
-// Load from the 'migrations' folder.
 migrator.LoadMigrations("./migrations");
 
 // Migrate from the current version to version 5.
+Console.WriteLine($"Old version: {migrator.GetVersion()}");
 migrator.SetVersion(5);
-var newCurrentVersion = migrator.GetVersion();
+Console.WriteLine($"New version: {migrator.GetVersion()}");
 ```
 
-The code above passes in the folder ```./migrations```.
+The code above passes in the folder ```./migrations``` to ```LoadMigrations```.
 That folder should contain something like:
 
 ```
@@ -53,12 +52,33 @@ That folder should contain something like:
         down.sql
 ```
 
-In each case above, the subfolder name is preceeded by the version sequence.
-The ```up.sql``` file would contain the SQL needed to "Create accounts".
-The ```down.sql``` file would contain the SQL needed to reverse that action.
+The folder name starts with the version sequence and is followed by the description.
+Inside each folder, the ```up.sql``` file would contain the SQL needed to progress to that version.
+The ```down.sql``` file would contain the SQL needed to drop down from this version to the one below.
 
 You must start at version one and you cannot omit a version in the sequence.
 You may also not have duplicate version numbers.
+
+## How it works
+
+There are either 2 or 3 components:
+
+* Migrator - what your code should interact with to load/perform migrations
+* Provider - a utility package to support a particular database technology
+* Notifier - an optional class that can be sent progress messages
+
+You follow this process:
+
+* Create a Provider instance for your database
+* Create a Migrator and pass in your Provider
+* Optionally create a Notifier and pass that to the Migrator
+* Ask your Migrator to load your migrations
+* Ask your Migrator to manage your current version
+
+That final stage will result in your up/down SQL statements being issued as needed to transition from your current database version to your target one.
+
+By default, this is supported by an automatically created/updated ```MigratableVersion``` table.
+It does, however, depend on the particular Provider.
 
 ---
 
@@ -66,10 +86,7 @@ You may also not have duplicate version numbers.
 
 If you only intend making use of *Migratable* in your own projects read no further.
 
-### Generating a build and running the tests
-
-There is no need to generate a build as *Migratable* is a class library not an application.
-If you run the tests, a build is generated anyway automatically:
+### Running the tests
 
 ``` sh
 cd Migratable.Tests
@@ -101,22 +118,5 @@ dotnet restore --no-cache
 
 ## MIT Licence
 
-Copyright (c) 2018 K Cartlidge
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Copyright (c) 2019 K Cartlidge.
+See the included ```LICENCE``` file for details.
