@@ -2,6 +2,9 @@
 {
     public interface IProvider
     {
+        /// <summary>Human description of the target.</summary>
+        string Describe();
+
         /// <summary>Get the current version.</summary>
         int GetVersion();
         /// <summary>Roll to the specified version.</summary>

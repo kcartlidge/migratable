@@ -5,6 +5,9 @@ namespace Migratable.Interfaces
 {
     public interface IMigrator
     {
+        /// <summary>Human description of the target.</summary>
+        string Describe();
+
         /// <summary>Loads all the migrations in the given folder path.</summary>
         SortedList<int, Migration> LoadMigrations(string folderPath);
 

@@ -1,7 +1,6 @@
 ﻿using Migratable.Models;
 using Migratable.Interfaces;
 using System.Collections.Generic;
-using System.Collections;
 using System.IO;
 using System;
 
@@ -21,6 +20,11 @@ namespace Migratable
         public void SetNotifier(INotifier notifier)
         {
             this.notifier = notifier;
+        }
+
+        public string Describe()
+        {
+            return provider.Describe();
         }
 
         public SortedList<int, Migration> LoadMigrations(string folderPath)
