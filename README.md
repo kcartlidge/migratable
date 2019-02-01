@@ -33,12 +33,19 @@ var provider = new SampleProvider();
 var migrator = new Migratable.Migrator(provider);
 migrator.LoadMigrations("./migrations");
 
+// Confirm the connection.
+Console.WriteLine(migrator.Describe());
+Console.Write("Press enter/return to continue (or Ctrl+C) ... ");
+Console.ReadLine();
+
 // Migrate from the current version to version 5.
 Console.WriteLine($"Old version: {migrator.GetVersion()}");
 migrator.SetVersion(5);
 Console.WriteLine($"New version: {migrator.GetVersion()}");
 ```
 
+The ```Describe()``` method is designed to give confidence in proceeding.
+For MySQL/MariaDB, for example, it shows the server and database name.
 The code above passes in the folder ```./migrations``` to ```LoadMigrations```.
 That folder should contain something like:
 
