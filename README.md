@@ -8,19 +8,21 @@ Simple, efficient, and tested DotNet Core database migrations supporting multipl
 * Use it to pre-populate, amend, or remove data
 * Your database structure is version-controlled
 * Migrations are defined as up and down SQL files in a folder
+* Migrations are run in transactions for atomic up/down
 
 ## Status
 
 Available on *nuget*:
 
 * Migratable - https://www.nuget.org/packages/Migratable
+* Migratable.PostgresProvider - https://www.nuget.org/packages/Migratable.PostgresProvider
 * Migratable.MySqlProvider - https://www.nuget.org/packages/Migratable.MySqlProvider
 
 ## Using Migratable
 
 *Migratable* is a versioned database migration manager.
 In order to do anything, it requires a *provider* for your chosen database system.
-**MySQL/MariaDB** is already available.
+**Postgres** and **MySQL/MariaDB** are already available.
 Implementing your own is straightforward, being just a single interface.
 
 There is also an ```Example``` project which is totally self-contained as it uses an in-memory provider.
@@ -68,11 +70,11 @@ You may also not have duplicate version numbers.
 
 ## How it works
 
-There are either 2 or 3 components:
+There are 2 components, with an optional third:
 
 * Migrator - what your code should interact with to load/perform migrations
 * Provider - a utility package to support a particular database technology
-* Notifier - an optional class that can be sent progress messages
+* Notifier - an *optional* class that can be sent progress messages
 
 You follow this process:
 
@@ -86,6 +88,12 @@ That final stage will result in your up/down SQL statements being issued as need
 
 By default, this is supported by an automatically created/updated ```MigratableVersion``` table.
 It does, however, depend on the particular Provider.
+
+## Note about MySQL
+
+MySQL has a habit of silently committing structural changes (add column, create table etc) mid-transaction.
+You should therefore avoid using multiple statements in a single migration if any one of them is structural.
+If you do, and one of the other statements fail, the transaction rollback will fail to undo a structural change that is already applied.
 
 ---
 
