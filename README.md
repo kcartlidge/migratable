@@ -14,9 +14,9 @@ Simple, efficient, and tested DotNet Core database migrations supporting multipl
 
 Available on *nuget*:
 
-* Migratable - https://www.nuget.org/packages/Migratable
-* Migratable.PostgresProvider - https://www.nuget.org/packages/Migratable.PostgresProvider
-* Migratable.MySqlProvider - https://www.nuget.org/packages/Migratable.MySqlProvider
+* [Migratable](https://www.nuget.org/packages/Migratable)
+* [Migratable.PostgresProvider](https://www.nuget.org/packages/Migratable.PostgresProvider)
+* [Migratable.MySqlProvider](https://www.nuget.org/packages/Migratable.MySqlProvider)
 
 ## Using Migratable
 
