@@ -6,8 +6,11 @@ using System;
 
 namespace Migratable
 {
+    /// <inheritdoc/>
     public class Migrator : IMigrator
     {
+        /// <summary>Create a new migrator using the given provider.</summary>
+        /// <param name="provider">An IProvider implementation (eg Postgres).</param>
         public Migrator(IProvider provider)
         {
             this.provider = provider;
@@ -17,16 +20,19 @@ namespace Migratable
         private INotifier notifier;
         private readonly IProvider provider;
 
+        /// <inheritdoc/>
         public void SetNotifier(INotifier notifier)
         {
             this.notifier = notifier;
         }
 
+        /// <inheritdoc/>
         public string Describe()
         {
             return provider.Describe();
         }
 
+        /// <inheritdoc/>
         public SortedList<int, Migration> LoadMigrations(string folderPath)
         {
             migrations = new SortedList<int, Migration>();
@@ -65,11 +71,13 @@ namespace Migratable
             return migrations;
         }
 
+        /// <inheritdoc/>
         public int GetVersion()
         {
             return provider.GetVersion();
         }
 
+        /// <inheritdoc/>
         public void SetVersion(int targetVersion)
         {
             if (targetVersion > 0 && !migrations.ContainsKey(targetVersion))
@@ -87,6 +95,7 @@ namespace Migratable
             }
         }
 
+        /// <inheritdoc/>
         public void RollForward(int targetVersion)
         {
             var currentVersion = GetVersion();
@@ -107,6 +116,7 @@ namespace Migratable
             }
         }
 
+        /// <inheritdoc/>
         public void RollBackward(int targetVersion)
         {
             var currentVersion = GetVersion();
@@ -127,6 +137,7 @@ namespace Migratable
             }
         }
 
+        /// <summary>If any INotifier is specified, send it the notification.</summary>
         private void Notify(Migration migration, Direction direction)
         {
             if (notifier != null)

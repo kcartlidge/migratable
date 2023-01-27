@@ -1,24 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <IncludeBuildOutput>true</IncludeBuildOutput>
-    <VersionPrefix>2.1.1.0</VersionPrefix>
-    <Product>Migratable</Product>
-    <Company>K Cartlidge</Company>
-    <Title>Migratable</Title>
-    <Authors>K Cartlidge</Authors>
-    <Description>Simple, efficient, and tested .Net Core database migrations supporting multiple database technologies.</Description>
-    <Copyright>K Cartlidge</Copyright>
-    <PackageLicenceUrl>https://opensource.org/licenses/MIT</PackageLicenceUrl>
-    <PackageProjectUrl>https://github.com/kcartlidge/migratable</PackageProjectUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>migrations,database,dotnet core</PackageTags>
-    <PackageReleaseNotes></PackageReleaseNotes>
-    <RepositoryUrl>https://github.com/kcartlidge/migratable</RepositoryUrl>
-    <Summary>Database migrations made easy. Transition forwards or backwards to any version without needing Entity Framework.</Summary>
-    <Version>2.1.1</Version>
-  </PropertyGroup>
-
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<IncludeBuildOutput>true</IncludeBuildOutput>
+		<VersionPrefix>2.2.0.0</VersionPrefix>
+		<Product>Migratable</Product>
+		<Company>K Cartlidge</Company>
+		<Title>Migratable</Title>
+		<Authors>K Cartlidge</Authors>
+		<Description>Simple, efficient, and tested .Net Core database migrations supporting multiple database technologies.</Description>
+		<Copyright>K Cartlidge</Copyright>
+		<PackageLicenceUrl>https://opensource.org/licenses/MIT</PackageLicenceUrl>
+		<PackageProjectUrl>https://github.com/kcartlidge/migratable</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageTags>migrations,database,dotnet core</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENCE</PackageLicenseFile>
+		<PackageReleaseNotes>
+		</PackageReleaseNotes>
+		<RepositoryUrl>https://github.com/kcartlidge/migratable</RepositoryUrl>
+		<Summary>Database migrations made easy. Transition forwards or backwards to any version without needing Entity Framework.</Summary>
+		<Version>2.2.0</Version>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Include="../README.md" Pack="true" PackagePath="" />
+		<None Include="../LICENCE" Pack="true" PackagePath="" />
+	</ItemGroup>
 </Project>
