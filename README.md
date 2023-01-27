@@ -25,7 +25,7 @@ In order to do anything, it requires a *provider* for your chosen database syste
 **Postgres** and **MySQL/MariaDB** are already available.
 Implementing your own is straightforward, being just a single interface.
 
-There is also an ```Example``` project which is totally self-contained as it uses an in-memory provider.
+There is also an `Example` project which is totally self-contained as it uses an in-memory provider.
 
 ### Sample usage
 
@@ -62,8 +62,8 @@ That folder should contain something like:
 ```
 
 The folder name starts with the version sequence and is followed by the description.
-Inside each folder, the ```up.sql``` file would contain the SQL needed to progress to that version.
-The ```down.sql``` file would contain the SQL needed to drop down from this version to the one below.
+Inside each folder, the `up.sql` file would contain the SQL needed to progress to that version.
+The `down.sql` file would contain the SQL needed to drop down from this version to the one below.
 
 You must start at version one and you cannot omit a version in the sequence.
 You may also not have duplicate version numbers.
@@ -86,7 +86,7 @@ You follow this process:
 
 That final stage will result in your up/down SQL statements being issued as needed to transition from your current database version to your target one.
 
-By default, this is supported by an automatically created/updated ```MigratableVersion``` table.
+By default, this is supported by an automatically created/updated `MigratableVersion` table.
 It does, however, depend on the particular Provider.
 
 ## Note about MySQL
@@ -110,7 +110,7 @@ dotnet test
 
 ### Creating a new version for Nuget
 
-The ```Migratable/Migratable.csproj``` file contains Nuget settings.
+The `Migratable/Migratable.csproj` file contains Nuget settings.
 Within that file, update the version number then create the Nuget package:
 
 ``` sh

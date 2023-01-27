@@ -1,5 +1,8 @@
 ﻿namespace Migratable.Interfaces
 {
+    /// <summary>
+    /// Defines what a specific database implementation needs to implement.
+    /// </summary>
     public interface IProvider
     {
         /// <summary>Human description of the target.</summary>
