@@ -11,11 +11,13 @@ class Program
         // Version from the assembly definition.
         // Remember to update it on new releases!
         var version = Assembly.GetEntryAssembly()?.GetName().Version;
+        var migratableVersion = Assembly.GetAssembly(typeof(IProvider))?.GetName().Version;
 
         // Instructions.
         Console.WriteLine();
         Console.WriteLine($"MIGRATABLE CLI v{version}");
         Console.WriteLine($"Built with Net {Environment.Version}");
+        Console.WriteLine($"Uses Migratable v{migratableVersion}");
         Console.WriteLine();
         Console.WriteLine("Usage:");
         Console.WriteLine("  migratable <db> <env_name> <migrations> <command>");
