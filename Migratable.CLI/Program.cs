@@ -42,7 +42,7 @@ class Program
         Console.WriteLine("  -latest      Apply new migrations");
         Console.WriteLine("  -next        Roll forward one migration");
         Console.WriteLine("  -back        Roll backward one migration");
-        Console.WriteLine("  -target <0>  Target specific migration");
+        Console.WriteLine("  -target=0    Target specific migration");
         Console.WriteLine();
 
         try
@@ -103,6 +103,10 @@ class Program
                 // If we have migrations, consider the commands.
                 var t = -1;
                 var doWork = true;
+                var cmdParam = "";
+                var bits = cmd.Split('=', 2, StringSplitOptions.RemoveEmptyEntries);
+                if (bits.Length > 1) (cmd, cmdParam) = (bits[0], bits[1]);
+
                 Console.Write("Instruction: ");
                 switch (cmd)
                 {
@@ -128,11 +132,11 @@ class Program
                         break;
                     case "-target":
                     case "--target":
-                        if (args.Length < 2)
+                        Console.WriteLine($"Target specific migration: `{cmdParam}`");
+                        if (string.IsNullOrWhiteSpace(cmdParam))
                             throw new Exception("Missing migration number");
-                        if (int.TryParse(args[1], out t) == false)
+                        if (int.TryParse(cmdParam, out t) == false)
                             throw new Exception("Expected a valid migration number");
-                        Console.WriteLine($"Target specific migration ({t})");
                         break;
                     case "-info":
                     case "--info":
@@ -196,6 +200,7 @@ class Program
         }
         catch (Exception e)
         {
+            Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine("ERROR");
             Console.WriteLine(e.Message);

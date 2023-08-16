@@ -151,7 +151,7 @@ Commands:
   -latest      Apply new migrations
   -next        Roll forward one migration
   -back        Roll backward one migration
-  -target <0>  Target specific migration
+  -target=0    Target specific migration
   ```
 
 ---
@@ -237,6 +237,15 @@ dotnet pack -c Release
 ```
 
 If you are changing the CLI that project contains its own version number.
+It also has its own script for creating new cross-platform builds:
+
+```sh
+cd <solution>
+cd Migratable.CLI
+./build.sh
+```
+
+On Windows use `build.bat` rather than `build.sh`.
 
 ### Forcing another project to get the latest from Nuget
 
