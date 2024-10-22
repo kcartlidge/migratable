@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Migratable;
+using System;
 
 namespace Example
 {
@@ -6,12 +7,15 @@ namespace Example
     {
         static void Main(string[] args)
         {
+            Console.WriteLine();
+            Console.WriteLine("MIGRATABLE EXAMPLE");
+            Console.WriteLine();
             try
             {
                 // Configure.
                 var provider = new SampleProvider();
                 var notifier = new SampleNotifier();
-                var migrator = new Migratable.Migrator(provider);
+                var migrator = new Migrator(provider);
                 migrator.SetNotifier(notifier);
 
                 // Introduction.
@@ -19,25 +23,31 @@ namespace Example
                 Console.WriteLine();
 
                 // Load from the 'migrations' folder.
-                Console.WriteLine("Loading migrations");
-                migrator.LoadMigrations("./migrations");
+                Console.WriteLine();
+                Console.WriteLine("LOADING MIGRATIONS");
+                var migrations = migrator.LoadMigrations("./migrations");
+
+                // Load from the 'migrations' folder.
+                Console.WriteLine("CURRENT TIMELINE");
+                var timeline = new Timeline(provider, migrations, 3);
+                timeline.Show();
 
                 // There are only 3 so this will go forward to there.
-                Console.WriteLine("Rolling forward to 5");
+                Console.WriteLine("FORWARD TO 5");
                 migrator.RollForward(5);
-                Console.WriteLine("Now at {0}", migrator.GetVersion());
+                timeline.Show();
 
-                Console.WriteLine("Rolling backward to 2");
+                Console.WriteLine("BACKWARD TO 2");
                 migrator.RollBackward(2);
-                Console.WriteLine("Now at {0}", migrator.GetVersion());
+                timeline.Show();
 
-                Console.WriteLine("Rolling backward to 0");
+                Console.WriteLine("BACKWARD TO 0");
                 migrator.RollBackward(0);
-                Console.WriteLine("Now at {0}", migrator.GetVersion());
+                timeline.Show();
 
-                Console.WriteLine("Rolling forward to 2");
+                Console.WriteLine("FORWARD TO 2");
                 migrator.RollForward(2);
-                Console.WriteLine("Now at {0}", migrator.GetVersion());
+                timeline.Show();
             }
             catch (Exception ex)
             {

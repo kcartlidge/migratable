@@ -8,7 +8,10 @@ namespace Example
     {
         public void Notify(Migration migration, Direction direction)
         {
-            Console.WriteLine("   {0}.{1}  {2}", migration.Version, direction, migration.Name);
+            Console.WriteLine("   {0}.{1}  {2}",
+                migration.Version,
+                direction.ToString().ToUpperInvariant(),
+                migration.Name);
         }
     }
 }

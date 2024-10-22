@@ -17,6 +17,7 @@ Available as both a **cross-platform CLI tool** suitable for any ecosystem (eg *
 - [Using Migratable via the CLI tool](#using-migratable-via-the-cli-tool)
 - [Using the Migratable Nuget packages](#using-the-migratable-nuget-packages)
     - [How it works](#how-it-works)
+    - [Timeline Display](#timeline-display)
 - [Note about MySQL](#note-about-mysql)
 - [For developers working on Migratable itself](#for-developers-working-on-migratable-itself)
     - [Running the tests](#running-the-tests)
@@ -164,6 +165,7 @@ If it fails to run on Linux and Mac one of the following may help:
 ## Using the Migratable Nuget packages
 
 There is an [Example project](./Example) in this solution.  It's totally self-contained as it uses an in-memory provider.
+It also shows the use of a `Timeline` to show the known migrations and the current status.
 
 Here's some sample code to show the packages in use. `SampleProvider` is defined in the example project just mentioned. You could also look at the (simple and commented) [code for the CLI tool](./Migratable.CLI).
 
@@ -171,7 +173,11 @@ Here's some sample code to show the packages in use. `SampleProvider` is defined
 // Configure.
 var provider = new SampleProvider();
 var migrator = new Migratable.Migrator(provider);
-migrator.LoadMigrations("./migrations");
+var migrations = migrator.LoadMigrations("./migrations");
+
+// Show the known migrations and current database position.
+var timeline = new Timeline(provider, migrations, 3);
+timeline.Show();
 
 // Confirm the connection.
 Console.WriteLine(migrator.Describe());
@@ -188,12 +194,13 @@ The `Describe()` method is designed to give confidence in proceeding. For MySQL/
 
 ### How it works
 
-There are 2 components, with an optional third:
+There are 2 necessary components, with two optional ones:
 
 - *Migrator* - what your code should interact with to load/perform migrations
 - *Provider* - a utility package to support a particular database technology
 - *Notifier* - an *optional* class that can be sent progress messages for you to output to the console, log to a file, send via email, or whatever you choose
     - The Notifier 'hook' is there but no delivery mechanism is provided, although the example project shows that a [console notifier](./Example/SampleNotifier.cs) is just one line of code
+- *Timeline* - an *optional* class that can show/return a list of migrations with the current migration position
 
 In brief, you follow this process:
 
@@ -202,9 +209,33 @@ In brief, you follow this process:
 - Optionally create a Notifier and pass that to the Migrator
 - Ask your Migrator to load your migrations
 - Ask your Migrator to perform versioned actions
+- Optionally use the Timeline before and/or after applying actions
 
-That final step will result in your up/down SQL statements being issued as needed to transition from your current database version to your target one.
+That final Migrator step will result in your up/down SQL statements being issued as needed to transition from your current database version to your target one.
 This is supported by an automatically created/updated `migratable_version` table.
+
+### Timeline Display
+
+The `Timeline` static class has options to either write a timeline to the `Console` or to return a `List<string>` containing the equivalent text (when writing to the screen a blank separator line is included before and after).
+
+When creating a new `Timeline` instance, the `2` is an optional indent for the text to ensure it fits with your own output. You can also provide two strings to override the title and the position text (shown below).
+
+``` cs
+var timeline = new Timeline(provider, migrations, 2);
+...
+migrator.SetVersion(2);
+timeline.Show();
+```
+
+Depending upon the migrations (this is based on one of the test fixtures) it would give something like this:
+
+```
+  STATUS
+  001 Create accounts
+  002 Populate accounts
+  <-- YOU ARE HERE
+  003 Create themes
+```
 
 ## Note about MySQL
 

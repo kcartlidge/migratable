@@ -1,6 +1,6 @@
 using Migratable.Interfaces;
 
-namespace Example
+namespace Migratable.Tests
 {
     public class SampleProvider : IProvider
     {

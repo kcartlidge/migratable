@@ -3,10 +3,7 @@ using System.Collections.Generic;
 
 namespace Migratable.Interfaces
 {
-    /// <summary>
-    /// Defines the migrator implementation.
-    /// Useful for dependency injection and use in tests.
-    /// </summary>
+    /// <summary>Defines the migrator implementation.</summary>
     public interface IMigrator
     {
         /// <summary>Human description of the target.</summary>

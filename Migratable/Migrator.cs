@@ -6,7 +6,7 @@ using System;
 
 namespace Migratable
 {
-    /// <inheritdoc/>
+    /// <summary>Handles migrations.</summary>
     public class Migrator : IMigrator
     {
         /// <summary>Create a new migrator using the given provider.</summary>
