@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28407.52
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CCE93C5C-7322-42BA-A63E-9BE2419ACE46}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		CHANGELOG.md = CHANGELOG.md
 		LICENCE = LICENCE
 		README.md = README.md
 		Releases.md = Releases.md
@@ -17,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migratable.Tests", "Migrata
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example", "Example\Example.csproj", "{0E9527A5-3AC4-4FBE-B58A-F0CADD4DC06E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migratable.CLI", "Migratable.CLI\Migratable.CLI.csproj", "{FF980ADD-C291-448E-9E93-214CAE5C6BA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migratable.CLI", "Migratable.CLI\Migratable.CLI.csproj", "{FF980ADD-C291-448E-9E93-214CAE5C6BA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
