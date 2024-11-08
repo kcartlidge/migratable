@@ -126,34 +126,27 @@ In the above example the parameters are:
 You can run without any command arguments to get a summary of usage:
 
 ``` text
-MIGRATABLE CLI v1.0.0.0
-Built with Net 7.0.9
-Uses Migratable v2.2.0.0
-
 Usage:
   migratable <db> <env_name> <migrations> <command>
 
 
   db          database; either POSTGRES or MYSQL
-              (always converted to uppercase)
   env_name    the name of an environment variable
               with a database connection string
-              (always converted to uppercase)
   migrations  folder containing migration scripts
               (https://github.com/kcartlidge/migratable)
   command     migration action to perform
-              (always converted to lowercase)
 
 Commands:
 
-  -info        Show migration status
-  -list        List known migrations
+  info        Show migration status
+  list        List known migrations
 
-  -reset       Remove all migrations
-  -latest      Apply new migrations
-  -next        Roll forward one migration
-  -back        Roll backward one migration
-  -target=0    Target specific migration
+  reset       Remove all migrations
+  latest      Apply new migrations
+  next        Roll forward one migration
+  back        Roll backward one migration
+  target=0    Target specific migration
 ```
 
 ---

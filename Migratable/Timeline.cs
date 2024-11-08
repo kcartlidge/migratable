@@ -1,4 +1,4 @@
-﻿using Migratable.Interfaces;
+using Migratable.Interfaces;
 using Migratable.Models;
 using System;
 using System.Collections.Generic;
@@ -63,7 +63,7 @@ namespace Migratable
             // Pre-derive some standard text.
             var shown = false;
             var pad = "".PadLeft(_indent, ' ');
-            var hereMessage = pad + "<".PadRight(width, '-') + $" {_here}";
+            var hereMessage = pad + "".PadRight(width, '-') + $" {_here}";
 
             // Add any title.
             if (_title.Any()) result.Add($"{pad}{_title}");

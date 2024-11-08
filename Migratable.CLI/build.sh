@@ -1,4 +1,4 @@
-﻿clear
+clear
 echo
 echo PRODUCING CROSS-PLATFORM BUILDS
 echo Should be run in the Migratable.CLI folder
@@ -12,7 +12,7 @@ echo
 rm -rf ../builds/macos-x64
 rm -rf ../builds/macos-arm64
 rm -rf ../builds/linux-x64
-rm -rf ../builds/win10-x64
+rm -rf ../builds/win-x64
 dotnet build
 
 echo
@@ -42,10 +42,10 @@ dotnet publish -o ../builds/linux-x64 -noconlog -r linux-x64 --self-contained -c
 echo
 echo
 echo ============================
-echo PUBLISHING WIN10-X64 - Intel
+echo PUBLISHING WIN-X64 - Intel
 echo ============================
 echo
-dotnet publish -o ../builds/win10-x64 -noconlog -r win10-x64 --self-contained -c Release /p:DebugType=None /p:DebugSymbols=false /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
+dotnet publish -o ../builds/win-x64 -noconlog -r win-x64 --self-contained -c Release /p:DebugType=None /p:DebugSymbols=false /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
 
 echo
 echo

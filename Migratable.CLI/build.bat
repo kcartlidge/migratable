@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 @cls
 @echo.
 @echo PRODUCING CROSS-PLATFORM BUILDS
@@ -11,7 +11,7 @@
 @echo ========
 @echo.
 @rd /S /Q builds 2>NUL
-@dotnet ..\build
+@dotnet build
 
 @echo.
 @echo.
@@ -39,11 +39,11 @@
 
 @echo.
 @echo.
-@echo ============================
-@echo PUBLISHING WIN10-X64 - Intel
-@echo ============================
+@echo ==========================
+@echo PUBLISHING WIN-X64 - Intel
+@echo ==========================
 @echo.
-@dotnet publish -o ..\builds\win10-x64 -noconlog -r win10-x64 --self-contained -c Release /p:DebugType=None /p:DebugSymbols=false /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
+@dotnet publish -o ..\builds\win-x64 -noconlog -r win-x64 --self-contained -c Release /p:DebugType=None /p:DebugSymbols=false /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
 
 @echo.
 @echo.
